@@ -1,4 +1,4 @@
-# pushguest 1.0.0
+# pushguest 1.1.0
 Pushes a updated "guest" account to multiple hotline servers on Linux
 
 [![Download pushguest](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/pushguest/files/latest/download)
