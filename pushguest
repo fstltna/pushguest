@@ -4,16 +4,23 @@ use warnings;
 use Net::OpenSSH;
 
 # Constants
-my $VERSION = "1.1.0";
+my $VERSION = "1.2.0";
 my $HOSTLIST = "$ENV{HOME}/.guesthosts";
 my $DEFEDITOR = "/usr/bin/nano";
 my $EDITOR = "";
 my $USER2PUSH = "guest";
 my $number_args = $#ARGV + 1;
+my $USERPASS = "";
 
-if ($number_args == 1)
+if ($number_args == 2)
 {
 	$USER2PUSH = $ARGV[0];
+	$USERPASS = $ARGV[1];
+}
+else
+{
+	print "Unknown option. Please enter:\n";
+	print "pushguest \<UserFile\> \<Password\>\n";
 }
 
 if ($ENV{'EDITOR'})
@@ -41,14 +48,6 @@ print "Uploading user $USER2PUSH\n";
 
 chdir "/home/hotlineuser/HotlineFiles/Users";
 
-print "Enter the password to use (or \"quit\"): ";
-my $USEPASSWORD = <>;
-chop($USEPASSWORD);
-if ($USEPASSWORD eq "quit")
-{
-	exit 0;
-}
-
 # Open the host list
 open( my $fh => $HOSTLIST) || die "Cannot open $HOSTLIST: $!";
 
@@ -57,7 +56,7 @@ while(my $curline = <$fh>)
 {
 	chop($curline);
 	print "Working on server '$curline'\n";
-	my $ssh = Net::OpenSSH->new($curline, user => "hotlineuser", password => $USEPASSWORD);
+	my $ssh = Net::OpenSSH->new($curline, user => "hotlineuser", password => $USERPASS);
 	$ssh->error and die "Couldn't establish SSH connection: ". $ssh->error;
 	$ssh->scp_put("$USER2PUSH.yaml", "/home/hotlineuser/HotlineFiles/Users") or die "scp failed: " . $ssh->error;
 }
